@@ -1,9 +1,7 @@
 <?php
 
 // Require Rediska
-if (!class_exists('Rediska')) {
-    require_once dirname(__FILE__) . '/../../Rediska.php';
-}
+require_once dirname(__FILE__) . '/../../../Rediska.php';
 
 /**
  * Rediska PubSub channel
@@ -93,11 +91,13 @@ class Rediska_PubSub_Channel extends Rediska_Options implements Iterator, ArrayA
     /**
      * Constructor
      * 
-     * @var string|array              $nameOrNames Channel name or array of names
-     * @var int                       $timeout     Timeout in seconds
-     * @var string|Rediska_Connection $serverAlias Server alias or connection object
+     * @param string|array    $nameOrNames Channel name or array of names
+     * @patam array[optional] $options     Options:
+     *                                         timeout     - Timeout in seconds
+     *                                         serverAlias - Server alias or connection object
+     *                                         rediska     - Set rediska instance
      */
-    public function __construct($nameOrNames, array $options = array())
+    public function __construct($nameOrNames, $options = array())
     {
         $this->setOptions($options);
 

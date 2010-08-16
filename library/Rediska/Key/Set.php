@@ -1,9 +1,7 @@
 <?php
 
 // Require Rediska
-if (!class_exists('Rediska')) {
-    require_once dirname(__FILE__) . '/../../Rediska.php';
-}
+require_once dirname(__FILE__) . '/../../Rediska.php';
 
 /**
  * Rediska Set key
@@ -19,7 +17,7 @@ class Rediska_Key_Set extends Rediska_Key_Abstract implements IteratorAggregate,
     /**
      * Add the specified member to the Set
      * 
-     * @param mixin $value Value
+     * @param mixed $value Value
      * @return boolean
      */
     public function add($value)
@@ -36,7 +34,7 @@ class Rediska_Key_Set extends Rediska_Key_Abstract implements IteratorAggregate,
     /**
      * Remove the specified member from the Set
      * 
-     * @param mixin $value Value
+     * @param mixed $value Value
      * @return boolean
      */
     public function remove($value)
@@ -54,7 +52,7 @@ class Rediska_Key_Set extends Rediska_Key_Abstract implements IteratorAggregate,
      * Move the specified member from one Set to another atomically
      * 
      * @param string|Rediska_Key_Set $set   Set key name or object
-     * @param mixin                  $value Value
+     * @param mixed                  $value Value
      * @return boolean
      */
     public function move($set, $value)
@@ -79,19 +77,19 @@ class Rediska_Key_Set extends Rediska_Key_Abstract implements IteratorAggregate,
     /**
      * Test if the specified value is a member of the Set
      * 
-     * @prarm mixin  $value Value
+     * @prarm mixed  $value Value
      * @return boolean
      */
     public function exists($value)
     {
         return $this->_getRediskaOn()->existsInSet($this->_name, $value);
     }
-    
+
     /**
      * Return the intersection between the Sets
      * 
-     * @param string|array $setOrSets    Set key name or object, or array of its
-     * @param string|null  $storeKeyName Store intersection to set with key name
+     * @param string|Rediska_Key_Set|array $setOrSets    Set key name or object, or array of its
+     * @param string|null                  $storeKeyName Store intersection to set with key name
      * @return array|boolean
      */
     public function intersect($setOrSets, $storeKeyName = null)
@@ -104,8 +102,8 @@ class Rediska_Key_Set extends Rediska_Key_Abstract implements IteratorAggregate,
     /**
      * Return the union between the Sets
      * 
-     * @param string|array $setOrSets    Set key name or object, or array of its
-     * @param string|null  $storeKeyName Store union to set with key name
+     * @param string|Rediska_Key_Set|array $setOrSets    Set key name or object, or array of its
+     * @param string|null                  $storeKeyName Store union to set with key name
      * @return array|boolean
      */
     public function union($setOrSets, $storeKeyName = null)

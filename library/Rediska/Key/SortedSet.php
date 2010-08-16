@@ -1,9 +1,7 @@
 <?php
 
 // Require Rediska
-if (!class_exists('Rediska')) {
-    require_once dirname(__FILE__) . '/../../Rediska.php';
-}
+require_once dirname(__FILE__) . '/../../Rediska.php';
 
 /**
  * Rediska Sorted set key
@@ -19,7 +17,7 @@ class Rediska_Key_SortedSet extends Rediska_Key_Abstract implements IteratorAggr
     /**
      * Add the specified member to the Sorted set
      * 
-     * @param mixin $value Value
+     * @param mixed $value Value
      * @param numeric $score Score
      * @return boolean
      */
@@ -37,7 +35,7 @@ class Rediska_Key_SortedSet extends Rediska_Key_Abstract implements IteratorAggr
     /**
      * Remove the specified member from the Sorted set
      * 
-     * @param mixin $value Value
+     * @param mixed $value Value
      * @return boolean
      */
     public function remove($value)
@@ -91,7 +89,7 @@ class Rediska_Key_SortedSet extends Rediska_Key_Abstract implements IteratorAggr
     /**
      * Get member score from Sorted Set
      * 
-     * @param mixin $value
+     * @param mixed $value
      * @return numeric
      */
     public function getScore($value)
@@ -137,9 +135,9 @@ class Rediska_Key_SortedSet extends Rediska_Key_Abstract implements IteratorAggr
     /**
      * Store to key union between the sorted sets
      * 
-     * @param string|array  $setOrSets    Sorted set key name or object, or array of its
-     * @param string        $storeKeyName Result sorted set key name
-     * @param string        $aggregation  Aggregation method: SUM (for default), MIN, MAX.
+     * @param string|Rediska_Key_SortedSet|array  $setOrSets    Sorted set key name or object, or array of its
+     * @param string                              $storeKeyName Result sorted set key name
+     * @param string                              $aggregation  Aggregation method: SUM (for default), MIN, MAX.
      * @return integer
      */
     public function union($setOrSets, $storeKeyName, $aggregation = 'sum')
@@ -152,9 +150,9 @@ class Rediska_Key_SortedSet extends Rediska_Key_Abstract implements IteratorAggr
     /**
      * Store to key intersection between sorted sets
      * 
-     * @param string|array  $setOrSets    Sorted set key name or object, or array of its
-     * @param string        $storeKeyName Result sorted set key name
-     * @param string        $aggregation  Aggregation method: SUM (for default), MIN, MAX.
+     * @param string|Rediska_Key_SortedSet|array  $setOrSets    Sorted set key name or object, or array of its
+     * @param string                              $storeKeyName Result sorted set key name
+     * @param string                              $aggregation  Aggregation method: SUM (for default), MIN, MAX.
      * @return integer
      */
     public function intersect($setOrSets, $storeKeyName, $aggregation = 'sum')
@@ -284,7 +282,7 @@ class Rediska_Key_SortedSet extends Rediska_Key_Abstract implements IteratorAggr
             }
         } else {
             foreach($sets as &$set) {
-                if ($set instanceof Rediska_Key_Set) {
+                if ($set instanceof Rediska_Key_SortedSet) {
                     $set = $set->getName();
                 }
             }
