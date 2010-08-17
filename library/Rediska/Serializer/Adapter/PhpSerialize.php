@@ -31,11 +31,11 @@ class Rediska_Serializer_Adapter_PhpSerialize implements Rediska_Serializer_Adap
      */
     public function unserialize($value)
     {
-        set_error_handler(array($this, 'throwCantUnserializeException'));
-
         $unserializedValue = @unserialize($value);
 
-        restore_error_handler();
+        if (false === $unserializedValue && serialize(false) === $value) {
+            throw new Rediska_Serializer_Adapter_Exception("Can't unserialize string");
+        }
 
         return $unserializedValue;
     }
