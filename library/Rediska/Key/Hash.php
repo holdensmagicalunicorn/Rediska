@@ -8,9 +8,10 @@ require_once dirname(__FILE__) . '/../../Rediska.php';
  * 
  * @author Ivan Shumkov
  * @package Rediska
+ * @category Key objects
  * @version @package_version@
  * @link http://rediska.geometria-lab.net
- * @licence http://www.opensource.org/licenses/bsd-license.php
+ * @license http://www.opensource.org/licenses/bsd-license.php
  */
 class Rediska_Key_Hash extends Rediska_Key_Abstract implements IteratorAggregate, ArrayAccess, Countable
 {
@@ -138,7 +139,7 @@ class Rediska_Key_Hash extends Rediska_Key_Abstract implements IteratorAggregate
     /**
      * Test if field is present in hash
      *
-     * @prarm mixed  $field Field
+     * @param mixed  $field Field
      * @return boolean
      */
     public function exists($field)

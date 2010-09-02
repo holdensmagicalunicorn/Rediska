@@ -7,7 +7,7 @@
  * @package Rediska
  * @version @package_version@
  * @link http://rediska.geometria-lab.net
- * @licence http://www.opensource.org/licenses/bsd-license.php
+ * @license http://www.opensource.org/licenses/bsd-license.php
  */
 class Rediska_Pipeline
 {
@@ -491,7 +491,7 @@ class Rediska_Pipeline
      * Test if the specified value is a member of the Set at key
      *
      * @param string $key    Key value
-     * @prarm mixed  $member Member
+     * @param mixed  $member Member
      * @return Rediska_Pipeline
      */
     public function existsInSet($key, $member) { $args = func_get_args(); return $this->_addCommand('existsInSet', $args); }

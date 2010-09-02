@@ -5,9 +5,10 @@
  * 
  * @author Ivan Shumkov
  * @package Rediska
+ * @category Commands
  * @version @package_version@
  * @link http://rediska.geometria-lab.net
- * @licence http://www.opensource.org/licenses/bsd-license.php
+ * @license http://www.opensource.org/licenses/bsd-license.php
  */
 class Rediska_Command_ExistsInSet extends Rediska_Command_Abstract
 {
@@ -15,7 +16,7 @@ class Rediska_Command_ExistsInSet extends Rediska_Command_Abstract
      * Create command
      *
      * @param string $key    Key value
-     * @prarm mixed  $member Member
+     * @param mixed  $member Member
      * @return Rediska_Connection_Exec
      */
     public function create($key, $member)

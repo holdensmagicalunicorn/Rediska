@@ -18,9 +18,10 @@ require_once 'Zend/Cache/Backend/ExtendedInterface.php';
  * 
  * @author Ivan Shumkov
  * @package Rediska
+ * @category Zend Framework integration
  * @version @package_version@
  * @link http://rediska.geometria-lab.net
- * @licence http://www.opensource.org/licenses/bsd-license.php
+ * @license http://www.opensource.org/licenses/bsd-license.php
  */
 class Rediska_Zend_Cache_Backend_Redis extends Zend_Cache_Backend implements Zend_Cache_Backend_ExtendedInterface
 {
@@ -42,14 +43,14 @@ class Rediska_Zend_Cache_Backend_Redis extends Zend_Cache_Backend implements Zen
      * 
      * @param mixed $rediska Rediska instance name, Rediska object or array of options
      */
-    public function __construct($rediska = null)
+    public function __construct($options = array())
     {
-        if ($rediska instanceof Zend_Config) {
-            $rediska = $rediska->toArray();
+        if ($options instanceof Zend_Config) {
+            $options = $options->toArray();
         }
 
-        if (!empty($rediska)) {
-            $this->setRediska($rediska);
+        if (isset($options['rediska'])) {
+            $this->setRediska($options['rediska']);
         }
     }
 

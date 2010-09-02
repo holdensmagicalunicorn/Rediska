@@ -10,9 +10,9 @@ require_once dirname(__FILE__) . '/../../../Rediska.php';
  * @package Rediska
  * @version @package_version@
  * @link http://rediska.geometria-lab.net
- * @licence http://www.opensource.org/licenses/bsd-license.php
+ * @license http://www.opensource.org/licenses/bsd-license.php
  */
-class Rediska_PubSub_Channel extends Rediska_Options_WithRediska implements Iterator, ArrayAccess
+class Rediska_PubSub_Channel extends Rediska_Options_RediskaInstance implements Iterator, ArrayAccess
 {
     const SUBSCRIBE     = 'subscribe';
     const UNSUBSCRIBE   = 'unsubscribe';
@@ -92,7 +92,7 @@ class Rediska_PubSub_Channel extends Rediska_Options_WithRediska implements Iter
      * Constructor
      * 
      * @param string|array    $nameOrNames Channel name or array of names
-     * @patam array[optional] $options     Options:
+     * @param array[optional] $options     Options:
      *                                         timeout     - Timeout in seconds
      *                                         serverAlias - Server alias or connection object
      *                                         rediska     - Rediska instance name, Rediska object or Rediska options for new instance

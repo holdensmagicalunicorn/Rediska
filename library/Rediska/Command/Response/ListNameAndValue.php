@@ -1,5 +1,15 @@
 <?php
 
+/**
+ * Rediska command list name and value response
+ * 
+ * @author Ivan Shumkov
+ * @package Rediska
+ * @category Commands
+ * @version @package_version@
+ * @link http://rediska.geometria-lab.net
+ * @license http://www.opensource.org/licenses/bsd-license.php
+ */
 class Rediska_Command_Response_ListNameAndValue extends ArrayObject
 {
     public function __set($name, $value)

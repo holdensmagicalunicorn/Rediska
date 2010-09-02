@@ -12,7 +12,7 @@ Rediska_Autoloader::register();
  * @package Rediska
  * @version @package_version@
  * @link http://rediska.geometria-lab.net
- * @licence http://www.opensource.org/licenses/bsd-license.php
+ * @license http://www.opensource.org/licenses/bsd-license.php
  */
 class Rediska extends Rediska_Options
 {
@@ -312,7 +312,7 @@ class Rediska extends Rediska_Options
      * Create transaction
      * 
      * @param $aliasOrConnection Server alias or Rediska_Connection object
-     * @return Rediska_Transation
+     * @return Rediska_Transaction
      */
     public function transaction($aliasOrConnection = null)
     {
@@ -337,8 +337,8 @@ class Rediska extends Rediska_Options
     /**
      * Subscribe to PubSub channel or channels
      * 
-     * @var string|array $channelOrChannels
-     * @var mixed        $timeout
+     * @param string|array      $channelOrChannels
+     * @param integer[optional] $timeout
      * @return Rediska_PubSub_Channel
      */
     public function subscribe($channelOrChannels, $timeout = null)
@@ -486,14 +486,6 @@ class Rediska extends Rediska_Options
         unset($command);
 
         return $response;
-    }
-
-    /**
-     * Remove instance from manager on destruct
-     */
-    public function  __destruct()
-    {
-        Rediska_Manager::remove($this);
     }
 
     /**
@@ -899,7 +891,7 @@ class Rediska extends Rediska_Options
      * Test if the specified value is a member of the Set at key
      *
      * @param string $key    Key value
-     * @prarm mixed  $member Member
+     * @param mixed  $member Member
      * @return boolean
      */
     public function existsInSet($key, $member) { $args = func_get_args(); return $this->_executeCommand('existsInSet', $args); }
