@@ -5,7 +5,7 @@
  * 
  * @author Ivan Shumkov
  * @package Rediska
- * @category Connection
+ * @subpackage Connection
  * @version @package_version@
  * @link http://rediska.geometria-lab.net
  * @license http://www.opensource.org/licenses/bsd-license.php
@@ -49,7 +49,7 @@ class Rediska_Connection extends Rediska_Options
         'password'     => null,
         'persistent'   => false,
         'timeout'      => null,
-        'readTimeout'  => null,
+        'readtimeout'  => null,
         'blockingmode' => true,
     );
 

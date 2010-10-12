@@ -1,4 +1,4 @@
-Version 0.5.0 (August 21, 2010):
+Version 0.5.0 (September 7, 2010):
  * Feature #2033: Implement hash commands: HSET, HGET, HDEL, HEXISTS, HLEN, HKEYS, HVALS, HGETALL, HMSET, HINCRBY, HMGET, HSETNX
  * Feature #2035: Hash object
  * Feature #2036: Transactions. Implement MULTI, EXEC, DISCARD
@@ -13,7 +13,6 @@ Version 0.5.0 (August 21, 2010):
  * Feature #3526: Implement MONITOR
  * Feature #3621: PhpDoc documentaion
  * Improvement #2405: New serialzier. 'phpSerialize' and 'json' adapters. Rediska now can't serialize strings.
- * Improvement #3199: Refactor commands
  * Improvement #3246: Add read timeout to connection
  * Improvement #3248: Add pushTo argument to pop method of List object
  * Improvement #3250: Method generator for IDE autocomplete and phpDoc
