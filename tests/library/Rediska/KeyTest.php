@@ -54,6 +54,38 @@ class Rediska_KeyTest extends Rediska_TestCase
         $this->assertEquals(121, $reply);
     }
 
+    public function testSetAndExpire()
+    {
+        $this->key->setAndExpire(123, 1);
+        $reply = $this->key->getRediska()->get($this->key->getName());
+        $this->assertEquals(123, $reply);
+        sleep(2);
+        $reply = $this->key->getRediska()->get($this->key->getName());
+        $this->assertNull($reply);
+    }
+
+    public function testAppend()
+    {
+        $this->key->setValue('abc');
+
+        $reply = $this->key->append('abc');
+        $this->assertEquals(6, $reply);
+
+        $reply = $this->key->getRediska()->get($this->key->getName());
+        $this->assertEquals('abcabc', $reply);
+    }
+
+    public function testSubstring()
+    {
+        $this->key->setValue('abc');
+
+        $reply = $this->key->substring(0);
+        $this->assertEquals('abc', $reply);
+
+        $reply = $this->key->substring(0, 1);
+        $this->assertEquals('ab', $reply);
+    }
+
     public function testGetOrSetValue()
     {
         $provider = new BasicKeyDataProvider();

@@ -54,16 +54,23 @@ class Rediska extends Rediska_Options
     /**
      * Object for distribution keys by servers 
      * 
-     * @var Rediska_KeyDistributor_Abstract
+     * @var Rediska_KeyDistributor_Interface
      */
     protected $_keyDistributor;
-    
+
     /**
      * Serializer object
      * 
-     * @var Rediska_Serializer_Interface
+     * @var Rediska_Serializer
      */
     protected $_serializer;
+
+    /**
+     * Profiler object
+     *
+     * @var Rediska_Profiler
+     */
+    protected $_profiler;
 
     /**
      * Configuration
@@ -85,11 +92,18 @@ class Rediska extends Rediska_Options
      *                     or you personal implementation (option value - name of class
      *                     which implements Rediska_KeyDistributor_Interface).
      * redisVersion      - Redis server version for command specification.
+     * profiler          - Rediska profiler. Disable for default. Don't use it on production!
+     *                     Value of this option may be:
+     *                         * True or false
+     *                         * Object wich implements Rediska_Profiler_Interface
+     *                         * Array with key 'name' wich value is name of profiler ('stream' for example)
+     *                           or class name wich implements Rediska_Profiler_Interface. Other keys passed
+     *                           as options to profiler
      *
      * @var array
      */
     protected $_options = array(
-        'addtomanager' => true,
+        'addToManager' => true,
         'name'         => self::DEFAULT_NAME,
         'namespace'    => '',
         'servers'      => array(
@@ -99,9 +113,10 @@ class Rediska extends Rediska_Options
                 'weight' => Rediska_Connection::DEFAULT_WEIGHT,
             )
         ),
-        'serializeradapter' => 'phpSerialize',
-        'keydistributor'    => 'consistentHashing',
-        'redisversion'      => self::STABLE_REDIS_VERSION,
+        'serializerAdapter' => 'phpSerialize',
+        'keyDistributor'    => 'consistentHashing',
+        'redisVersion'      => self::STABLE_REDIS_VERSION,
+        'profiler'          => false,
     );
 
     /**
@@ -126,6 +141,13 @@ class Rediska extends Rediska_Options
      *                     or you personal implementation (option value - name of class
      *                     which implements Rediska_KeyDistributor_Interface).
      * redisVersion      - Redis server version for command specification.
+     * profiler          - Rediska profiler. Disable for default. Don't use it on production!
+     *                     Value of this option may be:
+     *                         * True or false
+     *                         * Object wich implements Rediska_Profiler_Interface
+     *                         * Array with key 'name' wich value is name of profiler ('stream' for example)
+     *                           or class name wich implements Rediska_Profiler_Interface. Other keys passed
+     *                           as options to profiler
      * 
      */
     public function __construct(array $options = array()) 
@@ -145,7 +167,7 @@ class Rediska extends Rediska_Options
     {
         $this->_options['name'] = $name;
 
-        if ($this->_options['addtomanager']) {
+        if ($this->_options['addToManager']) {
             Rediska_Manager::add($this);
         }
 
@@ -401,7 +423,7 @@ class Rediska extends Rediska_Options
      */
     public function setKeyDistributor($name)
     {
-        $this->_options['keydistributor'] = $name;
+        $this->_options['keyDistributor'] = $name;
 
         if (is_object($name)) {
             $this->_keyDistributor = $name;
@@ -436,7 +458,7 @@ class Rediska extends Rediska_Options
      */
     public function setSerializerAdapter($adapter)
     {
-        $this->_options['serializeradapter'] = $adapter;
+        $this->_options['serializerAdapter'] = $adapter;
         $this->_serializer = null;
 
         return $this;
@@ -449,11 +471,67 @@ class Rediska extends Rediska_Options
      */
     public function getSerializer()
     {
-        if (!$this->_serializer) {
-            $this->_serializer = new Rediska_Serializer($this->_options['serializeradapter']);
+        if ($this->_serializer === null) {
+            $this->_serializer = new Rediska_Serializer($this->_options['serializerAdapter']);
         }
 
         return $this->_serializer;
+    }
+
+    /**
+     * Set profiler
+     *
+     * @param Rediska_Profiler|array $profilerOrOptions Profiler object or array of options
+     * @return Rediska
+     */
+    public function setProfiler($profilerOrOptions)
+    {
+        $this->_options['profiler'] = $profilerOrOptions;
+        $this->_profiler = null;
+        
+        return $this;
+    }
+
+    /**
+     * Get profiler
+     *
+     * @return Rediska_Profiler
+     */
+    public function getProfiler()
+    {
+        if (!$this->_profiler) {
+            if ($this->_options['profiler'] === false) {
+                $this->_profiler = new Rediska_Profiler_Null();
+            } else if ($this->_options['profiler'] === true) {
+                $this->_profiler = new Rediska_Profiler();
+            } else if (is_array($this->_options['profiler'])) {
+                if (!isset($this->_options['profiler']['name'])) {
+                    throw new Rediska_Exception("You must specify profiler 'name'.");
+                } else if (in_array($this->_options['profiler']['name'], array('stream'))) {
+                    $name = ucfirst($this->_options['profiler']['name']);
+                    $className = "Rediska_Profiler_$name";
+                    unset($this->_options['profiler']['name']);
+                    $this->_profiler = new $className($this->_options['profiler']);
+                } else if (@class_exists($this->_options['profiler']['name'])) {
+                    $className = $this->_options['profiler']['name'];
+                    unset($this->_options['profiler']['name']);
+                    $this->_profiler = new $className($this->_options['profiler']);
+                } else {
+                    throw new Rediska_Exception("Profiler '{$this->_options['profiler']['name']}' not found. You need include it before or setup autoload.");
+                }
+            } elseif (is_object($this->_options['profiler'])) {
+                $this->_profiler = $this->_options['profiler'];
+            } else {
+                throw new Rediska_Exception("Profiler option must be a boolean, object or array of options");
+            }
+
+            if (!$this->_profiler instanceof Rediska_Profiler_Interface) {
+                $profilerClass = get_class($this->_profiler);
+                throw new Rediska_Serializer_Exception("Profiler '$profilerClass' must implement Rediska_Profiler_Interface");
+            }
+        }
+
+        return $this->_profiler;
     }
 
     /**
@@ -476,12 +554,16 @@ class Rediska extends Rediska_Options
      * @return mixed
      */
     protected function _executeCommand($name, $args = array())
-    {
+    {        
         $this->_specifiedConnection->resetConnection();
 
         $command = Rediska_Commands::get($this, $name, $args);
 
+        $this->getProfiler()->start($command);
+
         $response = $command->execute();
+
+        $this->getProfiler()->stop();
 
         unset($command);
 
@@ -698,12 +780,12 @@ class Rediska extends Rediska_Options
     /**
      * Set + Expire atomic command
      *
-     * @param string  $key   Key name
-     * @param mixed   $value Value
-     * @param integer $time  Expire time
+     * @param string  $key      Key name
+     * @param mixed   $value    Value
+     * @param integer $seconds  Expire time in seconds
      * @return mixed
      */
-    public function setAndExpire($key, $value, $time) { $args = func_get_args(); return $this->_executeCommand('setAndExpire', $args); }
+    public function setAndExpire($key, $value, $seconds) { $args = func_get_args(); return $this->_executeCommand('setAndExpire', $args); }
 
     /**
      * Increment the number value of key by integer
@@ -736,8 +818,8 @@ class Rediska extends Rediska_Options
     /**
      * Append value to a end of string key
      *
-     * @param $key    Key name
-     * @param $value  Value
+     * @param string $key    Key name
+     * @param mixed  $value  Value
      * @return mixed
      */
     public function append($key, $value) { $args = func_get_args(); return $this->_executeCommand('append', $args); }
@@ -992,6 +1074,16 @@ class Rediska extends Rediska_Options
      * @return mixed
      */
     public function getSortedSetLength($key) { $args = func_get_args(); return $this->_executeCommand('getSortedSetLength', $args); }
+
+    /**
+     * Get count of members from sorted set by min and max score
+     *
+     * @param string $key Key name
+     * @param number $min Min score
+     * @param number $max Max score
+     * @return mixed
+     */
+    public function getSortedSetLengthByScore($key, $min, $max) { $args = func_get_args(); return $this->_executeCommand('getSortedSetLengthByScore', $args); }
 
     /**
      * Increment score of sorted set element

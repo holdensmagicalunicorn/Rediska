@@ -66,7 +66,7 @@ class Rediska_Zend_Auth_Adapter_Redis extends Rediska_Options_RediskaInstance im
     /**
      * Configuration
      * 
-     * userIdKey               - Redis key where you store relation between login and id. * replaced to identity (login)
+     * userIdKey               - Redis key where you store relation between login and id. '*' replaced to identity (login)
      * userDataKey             - Redis key where you store user data
      * credentialAttributeName - Name of credential (password) attribute in user data
      * userDataIsArray         - Set true if you store user data in associative array
@@ -77,10 +77,10 @@ class Rediska_Zend_Auth_Adapter_Redis extends Rediska_Options_RediskaInstance im
      * @var array
      */
     protected $_options = array(
-        'useridkey'               => 'user_ids:*',
-        'userdatakey'             => 'users:*',
-        'credentialattributename' => 'password',
-        'userdataisarray'         => false,
+        'userIdKey'               => 'user_ids:*',
+        'userDataKey'             => 'users:*',
+        'credentialAttributeName' => 'password',
+        'userDataIsArray'         => false,
     );
 
     /**
@@ -163,7 +163,7 @@ class Rediska_Zend_Auth_Adapter_Redis extends Rediska_Options_RediskaInstance im
                 throw new Zend_Auth_Adapter_Exception("User data key '$userDataKey' not found");
             }
 
-            $credentialAttributeName = $this->getOption('credentialattributename');
+            $credentialAttributeName = $this->getOption('credentialAttributeName');
             if ($this->getOption('userDataIsArray')) {
                 if (!array_key_exists($credentialAttributeName, $userData)) {
                     throw new Zend_Auth_Adapter_Exception("Credential key with name '$credentialAttributeName' not found in user data");

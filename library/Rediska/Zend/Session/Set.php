@@ -13,7 +13,7 @@ require_once dirname(__FILE__) . '/../../../Rediska.php';
  * @link http://rediska.geometria-lab.net
  * @license http://www.opensource.org/licenses/bsd-license.php
  */
-class Rediska_Zend_Session_Set extends Rediska_Key_Set
+class Rediska_Zend_Session_Set extends Rediska_Key_SortedSet
 {
     /**
      * Save handler instance

@@ -1,7 +1,7 @@
 <?php
 
 // Require Rediska
-require_once dirname(__FILE__) . '/../../../Rediska.php';
+require_once dirname(__FILE__) . '/../../Rediska.php';
 
 /**
  * Rediska PubSub channel
@@ -158,7 +158,13 @@ class Rediska_PubSub_Channel extends Rediska_Options_RediskaInstance implements 
      */
     public function publish($message)
     {
-        return $this->getRediska()->publish($this->_subscriptions, $message);
+        $rediska = $this->getRediska();
+
+        if ($this->getServerAlias() !== null) {
+            $rediska = $rediska->on($this->getServerAlias());
+        }
+
+        return $rediska->publish($this->_subscriptions, $message);
     }
 
     /**
@@ -184,12 +190,18 @@ class Rediska_PubSub_Channel extends Rediska_Options_RediskaInstance implements 
     /**
      * Get message
      *
+     * @param integer[optional] Timeout
      * @return Rediska_PubSub_Response_Message|null
      */
-    public function getMessage()
+    public function getMessage($timeout = null)
     {
+        // Get default timeout
+        if (!$timeout && $this->getTimeout()) {
+            $timeout = $this->getTimeout();
+        }
+
         // Start timer if not started from iterator
-        if ($this->_timeout && $this->_needStart) {
+        if ($timeout && $this->_needStart) {
             $this->_timeStart = time();
         }
 
@@ -220,15 +232,15 @@ class Rediska_PubSub_Channel extends Rediska_Options_RediskaInstance implements 
 
             /* @var $connection Rediska_Connection */
             foreach ($this->_connections as $connection) {
-                if ($this->_timeout) {
-                    $timeLeft = ($this->_timeStart + $this->_timeout) - time();
+                if ($timeout) {
+                    $timeLeft = ($this->_timeStart + $timeout) - time();
 
                     if ($timeLeft <= 0) {
                         // Reset timeStart if time started from this method
                         if ($this->_needStart) {
                             $this->_timeStart = 0;
                         }
-                        
+
                         return null;
                     }
 
@@ -256,7 +268,7 @@ class Rediska_PubSub_Channel extends Rediska_Options_RediskaInstance implements 
 
                     return $response;
                 } catch (Rediska_Connection_TimeoutException $e) {
-                    if (!$this->_timeout) {
+                    if (!$timeout) {
                         throw $e;
                     }
 
@@ -508,8 +520,8 @@ class Rediska_PubSub_Channel extends Rediska_Options_RediskaInstance implements 
     {
         $response = Rediska_Connection_Exec::readResponseFromConnection($connection);
 
-        if ($response === null) {
-            return $response;
+        if ($response === null || $response === true) {
+            return null;
         }
 
         list($type, $channel, $body) = $response;
