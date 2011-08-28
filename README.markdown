@@ -16,7 +16,7 @@ Features
 * Publish/Subscribe
 * Profiler
 * Pipelining
-* Easy extending Rediska by adding you own commands or overwrite standart
+* Easy extending Rediska by adding you own commands or overwrite standard
 * [Zend Framework](http://framework.zend.com/) integration
 * [Syfmony](http://www.symfony-project.org/) framework integration
 * Full [documentation](http://rediska.geometria-lab.ru/documentation)
@@ -40,7 +40,7 @@ Get started!
 
      1.1. **Install from PEAR**
 
-     For begining you need to discover our PEAR channel:
+     For beginning you need to discover our PEAR channel:
 
      `pear channel-discover pear.geometria-lab.net`
 
